@@ -61,12 +61,12 @@ const services = [
 ];
 
 export default function ServicesSection() {
-  const sectionRef = useRef(null);
-  const headerRef = useRef(null);
-  const gridRef = useRef(null);
-  const ctaRef = useRef(null);
-  const glowRef = useRef(null);
-  const cardRefs = useRef([]);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const ctaRef = useRef<HTMLDivElement | null>(null);
+  const glowRef = useRef<HTMLDivElement | null>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -81,7 +81,7 @@ export default function ServicesSection() {
       });
 
       // Header eyebrow / heading / subtext reveal
-      const headerEls = headerRef.current.querySelectorAll('[data-reveal]');
+      const headerEls = headerRef.current?.querySelectorAll('[data-reveal]');
       gsap.set(headerEls, { opacity: 0, y: 28 });
       gsap.to(headerEls, {
         opacity: 1,
@@ -138,7 +138,7 @@ export default function ServicesSection() {
       });
 
       // CTA reveal
-      const ctaEls = ctaRef.current.querySelectorAll('[data-reveal]');
+      const ctaEls = ctaRef.current?.querySelectorAll('[data-reveal]');
       gsap.set(ctaEls, { opacity: 0, y: 20 });
       gsap.to(ctaEls, {
         opacity: 1,
@@ -156,8 +156,9 @@ export default function ServicesSection() {
     return () => ctx.revert();
   }, []);
 
-  const handleCardEnter = (e, index) => {
+  const handleCardEnter = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
     const card = cardRefs.current[index];
+    if (!card) return;
     gsap.to(card, {
       y: -8,
       scale: 1.02,
@@ -173,8 +174,9 @@ export default function ServicesSection() {
     });
   };
 
-  const handleCardLeave = (index) => {
+  const handleCardLeave = (index: number) => {
     const card = cardRefs.current[index];
+    if (!card) return;
     gsap.to(card, {
       y: 0,
       scale: 1,
@@ -191,8 +193,9 @@ export default function ServicesSection() {
   };
 
   // Subtle magnetic tilt following cursor
-  const handleCardMove = (e, index) => {
+  const handleCardMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
     const card = cardRefs.current[index];
+    if (!card) return;
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
@@ -252,7 +255,9 @@ export default function ServicesSection() {
             return (
               <div
                 key={service.title}
-                ref={(el) => (cardRefs.current[index] = el)}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
                 onMouseEnter={(e) => handleCardEnter(e, index)}
                 onMouseMove={(e) => handleCardMove(e, index)}
                 onMouseLeave={() => handleCardLeave(index)}
