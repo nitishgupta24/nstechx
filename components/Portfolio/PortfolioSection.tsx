@@ -78,11 +78,11 @@ const projects = [
 export default function PortfolioSection() {
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const sectionRef = useRef(null);
-  const headerRef = useRef(null);
-  const filterRef = useRef(null);
-  const gridRef = useRef(null);
-  const glowRef = useRef(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const filterRef = useRef<HTMLDivElement | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
+  const glowRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const filtered = useMemo(
@@ -116,7 +116,7 @@ export default function PortfolioSection() {
         scrollTrigger: { trigger: headerRef.current, start: 'top 80%' },
       });
 
-      const filterBtns = filterRef.current.querySelectorAll('button');
+      const filterBtns = filterRef.current?.querySelectorAll('button');
       gsap.set(filterBtns, { opacity: 0, y: 16 });
       gsap.to(filterBtns, {
         opacity: 1,
@@ -152,7 +152,7 @@ export default function PortfolioSection() {
     );
   }, [filtered]);
 
-  const handleFilterClick = (cat) => {
+  const handleFilterClick = (cat: string) => {
     if (cat === activeCategory) return;
     const currentCards = Object.values(cardRefs.current).filter(Boolean);
     gsap.to(currentCards, {
@@ -166,8 +166,9 @@ export default function PortfolioSection() {
     });
   };
 
-  const handleCardEnter = (title) => {
+  const handleCardEnter = (title: string) => {
     const card = cardRefs.current[title];
+    if (!card) return;
     gsap.to(card, {
       y: -6,
       boxShadow: '0 20px 40px -14px rgba(37, 99, 235, 0.35)',
@@ -182,8 +183,9 @@ export default function PortfolioSection() {
     });
   };
 
-  const handleCardLeave = (title) => {
+  const handleCardLeave = (title: string) => {
     const card = cardRefs.current[title];
+    if (!card) return;
     gsap.to(card, {
       y: 0,
       boxShadow: '0 0px 0px rgba(0,0,0,0)',
@@ -263,7 +265,9 @@ export default function PortfolioSection() {
             return (
               <div
                 key={project.title}
-                ref={(el) => (cardRefs.current[project.title] = el)}
+                ref={(el) => {
+                  cardRefs.current[project.title] = el;
+                }}
                 onMouseEnter={() => handleCardEnter(project.title)}
                 onMouseLeave={() => handleCardLeave(project.title)}
                 className="group bg-slate-800/50 border border-slate-700/50 rounded-2xl overflow-hidden hover:border-blue-500/50 transition-colors duration-300 will-change-transform"
