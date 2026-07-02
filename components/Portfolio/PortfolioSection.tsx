@@ -105,7 +105,7 @@ export default function PortfolioSection() {
         repeat: -1,
       });
 
-      const headerEls = headerRef.current.querySelectorAll('[data-reveal]');
+      const headerEls = headerRef.current?.querySelectorAll('[data-reveal]');
       gsap.set(headerEls, { opacity: 0, y: 28 });
       gsap.to(headerEls, {
         opacity: 1,
