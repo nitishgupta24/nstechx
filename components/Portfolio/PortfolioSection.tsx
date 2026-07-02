@@ -83,7 +83,7 @@ export default function PortfolioSection() {
   const filterRef = useRef(null);
   const gridRef = useRef(null);
   const glowRef = useRef(null);
-  const cardRefs = useRef({});
+  const cardRefs = useRef<Record<string, HTMLElement | null>>({});
 
   const filtered = useMemo(
     () =>
